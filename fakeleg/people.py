@@ -7,6 +7,7 @@
 
 
 from pupa.scrape import Scraper, Legislator, Committee
+import random
 
 
 
@@ -14,35 +15,24 @@ class VoidPersonScraper(Scraper):
 
 
     def get_people(self):
-        root = Committee(name='Root Committee')
-        root.add_source("fake-data")
-        yield root
+        objs = []
 
-        com = Committee(name='Root A')
-        com.add_source("fake-data")
-        yield com
+        for x in range(2):
+            root = Committee(name='FOO ROOT %s' % (x))
+            root.add_source("fake-data")
+            objs.append(root)
 
-        com = Committee(name='Subcommitee of Root Committee 1')
-        com.add_source("fake-data")
-        com.parent = root
-        yield com
+            com1 = Committee(name='FOO SUBSUB %s' % (x))
+            com1.add_source("fake-data")
 
-        com1 = Committee(name='Subcommitee of Root Committee 2')
-        com1.add_source("fake-data")
-        com1.parent = root
-        yield com1
 
-        com = Committee(name='Double Subcommitee of Root Committee 2')
-        com.add_source("fake-data")
-        com.parent = com1
-        yield com
+            com = Committee(name='FOO SUB %s' % (x))
+            com.add_source("fake-data")
+            com.parent = root
+            objs.append(com)
 
-        com1j = Committee(name='Subcommitee of Root A Committee 1')
-        com1j.add_source("fake-data")
-        com1j.parent = com
-        yield com1j
+            com1.parent = com
+            objs.append(com1)
 
-        com1j = Committee(name='Subcommitee of Root A Committee 2')
-        com1j.add_source("fake-data")
-        com1j.parent = com
-        yield com1j
+        random.shuffle(objs)
+        return objs
